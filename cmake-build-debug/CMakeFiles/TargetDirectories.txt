@@ -1,0 +1,3 @@
+C:/Users/thxxe/Desktop/git/console_app/cmake-build-debug/CMakeFiles/console_app.dir
+C:/Users/thxxe/Desktop/git/console_app/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/thxxe/Desktop/git/console_app/cmake-build-debug/CMakeFiles/rebuild_cache.dir
