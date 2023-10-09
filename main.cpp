@@ -6,7 +6,9 @@
 
 void wyswietl_menu_glowne();
 
-std::vector<int> wyswietl_czas;
+std::vector<int> zwroc_date();
+std::vector<int> zwroc_godzine();
+
 
 int main() {
     int i = 0;
@@ -14,10 +16,54 @@ int main() {
     /*
     std::thread menu_display(wyswietl_menu_glowne);
     menu_display.join();
-
 */
+    std::vector<int> tablica = zwroc_date();
+    std::vector<int> tablica2 = zwroc_godzine();
+    for(auto i : tablica){
+        std::cout << i << " ";
+    }
+    for(auto i : tablica2){
+        std::cout << i << " ";
+    }
+
     return 0;
 }
+
+std::vector<int> zwroc_date(){
+    // Pobieranie aktualnego czasu
+    std::time_t currentTime = std::time(nullptr);
+
+    // Konwersja czasu na czytelną dla ludzi formę
+    std::tm* localTime = std::localtime(&currentTime);
+
+    auto rok = (localTime->tm_year + 1900);
+    auto miesiac = (localTime->tm_mon + 1);
+    auto dzien = (localTime->tm_mday);
+    std::vector<int> data;
+    data.push_back(rok);
+    data.push_back(miesiac);
+    data.push_back(dzien);
+
+    return data;
+}
+
+std::vector<int> zwroc_godzine(){
+        // Pobieranie aktualnego czasu
+        std::time_t currentTime = std::time(nullptr);
+        // Konwersja czasu na czytelną dla ludzi formę
+        std::tm* localTime = std::localtime(&currentTime);
+
+    auto godzina = (localTime->tm_hour);
+    auto minuta = (localTime->tm_min);
+    auto sekunda = (localTime->tm_sec);
+
+    std::vector<int> zwrot_godzina;
+    zwrot_godzina.push_back(godzina);
+    zwrot_godzina.push_back(minuta);
+    zwrot_godzina.push_back(sekunda);
+
+    return zwrot_godzina;
+};
 
 
 void wyswietl_menu_glowne(){
@@ -31,29 +77,5 @@ void wyswietl_menu_glowne(){
         //uśpienie wątku na 2s
         std::this_thread::sleep_for(std::chrono::milliseconds(2000));
     }
-
-}
-
-std::vector<int> wyswietl_czas(){
-    // Pobieranie aktualnego czasu
-    std::time_t currentTime = std::time(nullptr);
-
-    // Konwersja czasu na czytelną dla ludzi formę
-    std::tm* localTime = std::localtime(&currentTime);
-
-    // Wyświetlanie aktualnej daty i godziny
-    std::cout << "Aktualna data i godzina: ";
-    std::cout << (localTime->tm_year + 1900) << "-" << (localTime->tm_mon + 1) << "-" << localTime->tm_mday;
-    std::cout << " " << localTime->tm_hour << ":" << localTime->tm_min << ":" << localTime->tm_sec << std::endl;
-
-    auto rok = (localTime->tm_year + 1900),
-    auto miesiac = (localTime->tm_mon + 1); ;
-    auto dzien = (localTime->tm_mday);
-    std::vector<int> data;
-    data.push_back(rok);
-    data.push_back(miesiac);
-    data.push_back(dzien);
-
-    return data;
 
 }
