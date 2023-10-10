@@ -4,6 +4,7 @@
 #include <thread>
 #include <vector>
 #include <string>
+#include <fstream>
 #include "awaria.h"
 
 
@@ -20,17 +21,29 @@ std::string zwroc_date_string(std::vector<int> data);
 int main() {
     //    Awaria(std::string nazwa_param, std::string opis_param, std::vector<int> data_vector_param);
     std::string nazwa_awarii = "awaria1";
+    std::string nazwa_awarii2 = "awaria2";
     std::string opis_awarii = "maszyna zepsuta";
+    std::string opis_awarii2 = "maszyna zepsuta2";
     std::vector<int> tablica = zwroc_date();
     std::vector<int> tablica2 = zwroc_godzine();
     Awaria awaria1(nazwa_awarii, opis_awarii, tablica);
+    Awaria awaria2(nazwa_awarii2, opis_awarii2, tablica);
 
-    std::cout << awaria1.is_file_readable();
+    std::fstream plik;
+    plik.open("awaria_dane.txt", std::ios::out);
+    if (plik.good() == true) {
+        std::cout << "Uzyskano dostep do pliku!" << std::endl;
+        //tu operacje na pliku
+    } else std::cout << "Dostep do pliku zostal zabroniony!" << std::endl;
+
+    std::cout << "czy klasa ma dostep do pliku:" << awaria1.is_file_readable() << std::endl;
 
 
+    awaria1.uzupelnij_dane();
+    awaria2.uzupelnij_dane();
 
 
-    /*while (true) {
+    while (true) {
         std::thread menu_display(wyswietl_menu_glowne, zwroc_date(), zwroc_godzine());
         std::this_thread::sleep_for(std::chrono::milliseconds(2000));
         menu_display.join();
@@ -38,9 +51,11 @@ int main() {
         std::vector<int> tablica2 = zwroc_godzine();
         wyswietl_godzine(zwroc_godzine());
         wyswietl_date(zwroc_date());
-*/
-        return 0;
+
+
     }
+    return 0;
+}
 
 
     std::vector<int> zwroc_date() {

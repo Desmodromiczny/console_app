@@ -23,6 +23,7 @@ public:
     std::vector<int> data_vector;
 
     bool is_file_readable();
+    void uzupelnij_dane();
 };
 
 #endif //CONSOLE_APP_AWARIA_H
