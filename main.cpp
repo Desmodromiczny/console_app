@@ -41,9 +41,11 @@ int main() {
 
     awaria1.uzupelnij_dane();
     awaria2.uzupelnij_dane();
+    std::cout << "---" << std::endl;
+    std::cout << awaria2.czas_utworzenia();
 
 
-    while (true) {
+    /*while (true) {
         std::thread menu_display(wyswietl_menu_glowne, zwroc_date(), zwroc_godzine());
         std::this_thread::sleep_for(std::chrono::milliseconds(2000));
         menu_display.join();
@@ -53,7 +55,7 @@ int main() {
         wyswietl_date(zwroc_date());
 
 
-    }
+    }*/
     return 0;
 }
 

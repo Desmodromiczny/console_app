@@ -21,9 +21,13 @@ public:
     std::string nazwa;
     std::string opis;
     std::vector<int> data_vector;
+    ~Awaria();
 
     bool is_file_readable();
     void uzupelnij_dane();
+    unsigned long long int czas_utworzenia();
+    unsigned long long int licz_czas_trwania(unsigned long long int czas_utworzenia);
+
 };
 
 #endif //CONSOLE_APP_AWARIA_H
