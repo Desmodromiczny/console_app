@@ -21,13 +21,13 @@ public:
     std::string nazwa;
     std::string opis;
     std::vector<int> data_vector;
+    std::string data_utworzenia_string;
     ~Awaria();
 
     bool is_file_readable();
     void uzupelnij_dane();
-    unsigned long long int czas_utworzenia();
-    unsigned long long int licz_czas_trwania(unsigned long long int czas_utworzenia);
-
+    std::string zwroc_date();
+    std::string roznica_czasu(const std::string& data_poczatkowa, const std::string& data_koncowa);
 };
 
 #endif //CONSOLE_APP_AWARIA_H

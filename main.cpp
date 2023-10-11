@@ -19,7 +19,6 @@ std::string zwroc_date_string(std::vector<int> data);
 
 
 int main() {
-    //    Awaria(std::string nazwa_param, std::string opis_param, std::vector<int> data_vector_param);
     std::string nazwa_awarii = "awaria1";
     std::string nazwa_awarii2 = "awaria2";
     std::string opis_awarii = "maszyna zepsuta";
@@ -42,31 +41,18 @@ int main() {
     awaria1.uzupelnij_dane();
     awaria2.uzupelnij_dane();
     std::cout << "---" << std::endl;
-    std::cout << awaria2.czas_utworzenia();
+    std::cout << "zwracam date: " << awaria2.zwroc_date();
+    std::string data = awaria2.zwroc_date();
+    std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+    std::cout << "zwracam date: " << awaria2.roznica_czasu(data, awaria2.zwroc_date());
 
-
-    /*while (true) {
-        std::thread menu_display(wyswietl_menu_glowne, zwroc_date(), zwroc_godzine());
-        std::this_thread::sleep_for(std::chrono::milliseconds(2000));
-        menu_display.join();
-        std::vector<int> tablica = zwroc_date();
-        std::vector<int> tablica2 = zwroc_godzine();
-        wyswietl_godzine(zwroc_godzine());
-        wyswietl_date(zwroc_date());
-
-
-    }*/
     return 0;
 }
 
 
     std::vector<int> zwroc_date() {
-        // Pobieranie aktualnego czasu
         std::time_t currentTime = std::time(nullptr);
-
-        // Konwersja czasu na czytelną dla ludzi formę
         std::tm *localTime = std::localtime(&currentTime);
-
         auto rok = (localTime->tm_year + 1900);
         auto miesiac = (localTime->tm_mon + 1);
         auto dzien = (localTime->tm_mday);
@@ -79,20 +65,15 @@ int main() {
     }
 
     std::vector<int> zwroc_godzine() {
-        // Pobieranie aktualnego czasu
         std::time_t currentTime = std::time(nullptr);
-        // Konwersja czasu na czytelną dla ludzi formę
         std::tm *localTime = std::localtime(&currentTime);
-
         auto godzina = (localTime->tm_hour);
         auto minuta = (localTime->tm_min);
         auto sekunda = (localTime->tm_sec);
-
         std::vector<int> zwrot_godzina;
         zwrot_godzina.push_back(godzina);
         zwrot_godzina.push_back(minuta);
         zwrot_godzina.push_back(sekunda);
-
         return zwrot_godzina;
     };
 

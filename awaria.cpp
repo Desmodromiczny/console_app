@@ -9,14 +9,16 @@
         nazwa = nazwa_param;
         opis = opis_param;
         data_vector = data_vector_param;
+        data_utworzenia_string = zwroc_date();
+
     }
     Awaria::~Awaria(){
-
 }
 
     std::string nazwa;
     std::string opis;
     std::vector<int> data_vector;
+    std::string data_utworzenia_string;
 
 
     bool Awaria::is_file_readable(){
@@ -51,39 +53,44 @@
                 plik << i << std::endl;
             }
         }
+        plik << "Data utworzenia string: " << data_utworzenia_string << std::endl;
         plik << "==========" <<std::endl;
 
 
     }
 
-    unsigned long long int Awaria::czas_utworzenia(){
-            auto start = std::chrono::steady_clock::now();
-            std::this_thread::sleep_for(std::chrono::milliseconds(2000));
-            auto end = std::chrono::steady_clock::now();
-            auto end2 = std::chrono::duration_cast<std::chrono::milliseconds>(end-start);
-            unsigned long long int miliseconds = static_cast<long long int>(end2.count());
-            auto end3 = std::chrono::duration_cast<std::chrono::seconds>(end-start);
-            auto end4 = std::chrono::duration_cast<std::chrono::hours>(end-start);
-            auto end5 = std::chrono::duration_cast<std::chrono::hours>(end-start) /24;
 
-//            std::cout << end2.count() << "milisekund" << std::endl;
-//            std::cout << end3.count() << "sekund" << std::endl;
-//            std::cout << end4.count() << "godzin" << std::endl;
-//            std::cout << end5.count() << "dni" << std::endl;
+     std::string Awaria::zwroc_date() {
+         time_t now = time(0);
+         tm *lokalny_czas = localtime(&now);
+         char czas[100];
+         strftime(czas, 100, "%Y-%m-%d %H:%M:%S", lokalny_czas);
+         return czas;
+     }
 
-            return miliseconds;
-    };
-//TODO - nie działa, poprawić
+std::string Awaria::roznica_czasu(const std::string& data_poczatkowa, const std::string& data_koncowa) {
+    std::tm czas_tm_pocz = {};
+    std::istringstream ss_pocz(data_poczatkowa);
+    ss_pocz >> std::get_time(&czas_tm_pocz, "%Y-%m-%d %H:%M:%S");
+    std::time_t data_unix_pocz = std::mktime(&czas_tm_pocz);
 
-    unsigned long long int licz_czas_trwania(unsigned long long int czas_utworzenia){
+    std::tm czas_tm_kon = {};
+    std::istringstream ss_kon(data_koncowa);
+    ss_kon >> std::get_time(&czas_tm_kon, "%Y-%m-%d %H:%M:%S");
+    std::time_t data_unix_kon = std::mktime(&czas_tm_kon);
 
-        auto zakonczenie = std::chrono::steady_clock::now();
-        unsigned long long int end_miliseconds = static_cast<unsigned long long int>(zakonczenie.count());
-        unsigned long long int wynik = (end_miliseconds - zakonczenie);
-        //unsigned long long int miliseconds = static_cast<long long int>(end2.count());
-        return wynik;
+    std::time_t roznica = data_unix_kon - data_unix_pocz;
 
-    };
+    int dni = roznica / (60 * 60 * 24);
+    int godziny = (roznica % (60 * 60 * 24)) / (60 * 60);
+    int minuty = (roznica % (60 * 60)) / 60;
+    int sekundy = roznica % 60;
+
+    std::ostringstream wynik;
+    wynik << dni << " dni, " << godziny << " godzin, " << minuty << " minut, " << sekundy << " sekund";
+    return wynik.str();
+}
+
 
 
 
