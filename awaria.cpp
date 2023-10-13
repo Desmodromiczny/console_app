@@ -10,6 +10,7 @@
         opis = opis_param;
         data_vector = data_vector_param;
         data_utworzenia_string = zwroc_date();
+        uzupelnij_dane();
 
     }
     Awaria::~Awaria(){
@@ -47,7 +48,6 @@
             if(k < (data_vector.size() -1)){
                     plik << i << " ";
                     k++;
-                    std::cout << k << std::endl;
                 }
             else {
                 plik << i << std::endl;

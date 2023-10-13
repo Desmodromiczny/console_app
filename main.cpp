@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 #include <fstream>
+#include <map>
 #include "awaria.h"
 
 
@@ -14,39 +15,103 @@ std::vector<int> zwroc_godzine();
 void wyswietl_godzine(std::vector<int> godzina);
 void wyswietl_date(std::vector<int> data);
 std::string zwroc_date_string(std::vector<int> data);
+void zgloszenie_awarii(std::string nazwa_awarii, std::string opis_awarii, std::vector<int> data_vector);
+void uzupelnij_mape(std::map<int, std::string>& mapa_awarii, std::string& nazwa_awarii);
+void wyswietlanie_aktualnych_awarii(std::map<int, std::string>& mapa_awarii);
+void kasowanie_podanej_awarii(std::map<int, std::string>& mapa_awarii, int wybor);
 
 
 
 
 int main() {
-    std::string nazwa_awarii = "awaria1";
-    std::string nazwa_awarii2 = "awaria2";
-    std::string opis_awarii = "maszyna zepsuta";
-    std::string opis_awarii2 = "maszyna zepsuta2";
-    std::vector<int> tablica = zwroc_date();
-    std::vector<int> tablica2 = zwroc_godzine();
-    Awaria awaria1(nazwa_awarii, opis_awarii, tablica);
-    Awaria awaria2(nazwa_awarii2, opis_awarii2, tablica);
-
     std::fstream plik;
     plik.open("awaria_dane.txt", std::ios::out);
     if (plik.good() == true) {
         std::cout << "Uzyskano dostep do pliku!" << std::endl;
-        //tu operacje na pliku
     } else std::cout << "Dostep do pliku zostal zabroniony!" << std::endl;
 
-    std::cout << "czy klasa ma dostep do pliku:" << awaria1.is_file_readable() << std::endl;
+    std::vector data = zwroc_date();
+    std::vector godzina = zwroc_godzine();
+    std::string nazwa_awarii;
+    std::string opis_awarii;
+
+    std::map<int, std::string> mapa_awarii;
+    mapa_awarii.insert(std::pair<int, std::string>(1, "awaria1"));
+    mapa_awarii.insert(std::pair<int, std::string>(2, "awaria2"));
+    mapa_awarii.insert(std::pair<int, std::string>(3, "awaria3"));
 
 
-    awaria1.uzupelnij_dane();
-    awaria2.uzupelnij_dane();
-    std::cout << "---" << std::endl;
-    std::cout << "zwracam date: " << awaria2.zwroc_date();
-    std::string data = awaria2.zwroc_date();
-    std::this_thread::sleep_for(std::chrono::milliseconds(2000));
-    std::cout << "zwracam date: " << awaria2.roznica_czasu(data, awaria2.zwroc_date());
+
+    std::cout << mapa_awarii.size();
+
+
+    while(1){
+        wyswietl_menu_glowne(data, godzina);
+        int wybor = 0;
+        std::cin >> wybor;
+        switch(wybor){
+            case 1:
+                std::cout << "podaj nazwe awarii" << std::endl;
+                std::cin >> nazwa_awarii;
+                std::cout << "podaj opis awarii" << std::endl;
+                std::cin >> opis_awarii;
+                zgloszenie_awarii(nazwa_awarii, opis_awarii, zwroc_date());
+                std::cout << "pomyslnie utworzono record o nazwie: " << nazwa_awarii << "z opisem: " << opis_awarii << " z data: " << zwroc_date_string << std::endl;
+                uzupelnij_mape(mapa_awarii, nazwa_awarii);
+                break;
+            case 2:
+                //wyswietlanie aktualnych awarii
+                wyswietlanie_aktualnych_awarii(mapa_awarii);
+                break;
+            case 3:
+                //kasowanie awarii
+                std::cout << "czy chcesz wyswietlic awarie? y/n" << std::endl;
+                char wybor;
+                std::cin >> wybor;
+                if (wybor == 'y') {
+                    wyswietlanie_aktualnych_awarii(mapa_awarii);
+                }
+                else if(wybor == 'n'){
+                    std::cout << "podaj numer awarii ktora chcesz usunac:";
+                    int wybor2 = 0;
+                    std::cin >> wybor2;
+                    kasowanie_podanej_awarii(mapa_awarii, wybor2);
+                    break;
+                }
+                else{
+                    std::cout << "podales zly znak" << std::endl;
+                    break;
+                }
+            case 9:
+                std::cout << "koncze dzialanie programu" << std::endl;
+                return 0;
+        }
+    }
 
     return 0;
+}
+
+void kasowanie_podanej_awarii(std::map<int, std::string>& mapa_awarii, int wybor) {
+    if (mapa_awarii.erase(wybor) == true) {
+        std::cout << "usunieto";
+    } else {
+        std::cout << "cos poszlo nie tak przy usuwaniu" << std::endl;
+    }
+}
+
+
+void uzupelnij_mape(std::map<int, std::string>& mapa_awarii, std::string& nazwa_awarii){
+    int temp = mapa_awarii.size();
+    std::cout << "testowy numer mapy: " << temp << std::endl;
+    mapa_awarii.insert(std::pair<int, std::string>(temp, nazwa_awarii));
+}
+
+void wyswietlanie_aktualnych_awarii(std::map<int, std::string>& mapa_awarii){
+    for(auto& i : mapa_awarii){
+        int klucz = i.first;
+        std::string nazwa_awarii = i.second;
+        std::cout << "Numer: " << klucz << " Nazwa: " << nazwa_awarii << std::endl;
+    }
 }
 
 
@@ -116,6 +181,10 @@ int main() {
         return concat;
     }
 
+    void zgloszenie_awarii(std::string nazwa_awarii, std::string opis_awarii, std::vector<int> data_vector){
+        Awaria awaria(nazwa_awarii, opis_awarii, data_vector);
+    }
+
     void wyswietl_menu_glowne(std::vector<int> data, std::vector<int> godzina) {
         std::string wewn_data = [](auto data) {
             int k = 0;
@@ -152,8 +221,6 @@ int main() {
         std::cout << "***  3. Usuwanie awarii                                                       ***" << std::endl;
         std::cout << "***                                                                           ***" << std::endl;
         std::cout << "*********************************************************************************" << std::endl;
-        //uśpienie wątku na 2s
-        //std::this_thread::sleep_for(std::chrono::milliseconds(2000));
     }
 
 
