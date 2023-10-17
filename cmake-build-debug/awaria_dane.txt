@@ -1,0 +1,12 @@
+==========
+Nazwa: awaria1
+Opis: opis1
+Data Vector: 2023 10 17
+Data utworzenia string: 2023-10-17 15:06:18
+numer awarii: 0==========
+==========
+Nazwa: awaria2
+Opis: opis2
+Data Vector: 2023 10 17
+Data utworzenia string: 2023-10-17 15:06:23
+numer awarii: 1==========

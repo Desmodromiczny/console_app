@@ -16,14 +16,16 @@ class Awaria {
 public:
     Awaria() = default;
 
-    Awaria(std::string nazwa_param, std::string opis_param, std::vector<int> data_vector_param);
+    Awaria(int numer_awarii, std::string nazwa_param, std::string opis_param, std::vector<int> data_vector_param);
 
     std::string nazwa;
     std::string opis;
     std::vector<int> data_vector;
+    int numer_awarii;
     std::string data_utworzenia_string;
     ~Awaria();
 
+    std::string getName();
     bool is_file_readable();
     void uzupelnij_dane();
     std::string zwroc_date();

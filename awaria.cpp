@@ -1,25 +1,29 @@
 //
 // Created by thxxe on 10.10.2023.
 //
-
 #include <fstream>
 #include "awaria.h"
 
-    Awaria::Awaria(std::string nazwa_param, std::string opis_param, std::vector<int> data_vector_param){
+    Awaria::Awaria(int numer_awarii_param,std::string nazwa_param, std::string opis_param, std::vector<int> data_vector_param){
+        numer_awarii = numer_awarii_param;
         nazwa = nazwa_param;
         opis = opis_param;
         data_vector = data_vector_param;
         data_utworzenia_string = zwroc_date();
         uzupelnij_dane();
-
     }
-    Awaria::~Awaria(){
-}
+    Awaria::~Awaria()= default;
 
     std::string nazwa;
     std::string opis;
     std::vector<int> data_vector;
     std::string data_utworzenia_string;
+    int numer_awarii;
+
+
+    std::string Awaria::getName(){
+        return nazwa;
+    };
 
 
     bool Awaria::is_file_readable(){
@@ -54,6 +58,7 @@
             }
         }
         plik << "Data utworzenia string: " << data_utworzenia_string << std::endl;
+        plik << "numer awarii: " << numer_awarii;
         plik << "==========" <<std::endl;
 
 

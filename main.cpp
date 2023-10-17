@@ -15,10 +15,12 @@ std::vector<int> zwroc_godzine();
 void wyswietl_godzine(std::vector<int> godzina);
 void wyswietl_date(std::vector<int> data);
 std::string zwroc_date_string(std::vector<int> data);
-void zgloszenie_awarii(std::string nazwa_awarii, std::string opis_awarii, std::vector<int> data_vector);
 void uzupelnij_mape(std::map<int, std::string>& mapa_awarii, std::string& nazwa_awarii);
 void wyswietlanie_aktualnych_awarii(std::map<int, std::string>& mapa_awarii);
-void kasowanie_podanej_awarii(std::map<int, std::string>& mapa_awarii, int wybor);
+void kasowanie_podanej_awarii(std::map<int, std::string>& mapa_awarii, int wybor, std::vector<Awaria>& lista_awarii);
+void zgloszenie_awarii(int numer_awarii,std::string nazwa_awarii, std::string opis_awarii, std::vector<int> data_vector, std::vector<Awaria>& lista_awarii);
+int zwroc_wielkosc_mapy(std::map<int, std::string>& mapa_awarii);
+
 
 
 
@@ -36,13 +38,8 @@ int main() {
     std::string opis_awarii;
 
     std::map<int, std::string> mapa_awarii;
-    mapa_awarii.insert(std::pair<int, std::string>(1, "awaria1"));
-    mapa_awarii.insert(std::pair<int, std::string>(2, "awaria2"));
-    mapa_awarii.insert(std::pair<int, std::string>(3, "awaria3"));
+    std::vector<Awaria> lista_awarii;
 
-
-
-    std::cout << mapa_awarii.size();
 
 
     while(1){
@@ -55,9 +52,13 @@ int main() {
                 std::cin >> nazwa_awarii;
                 std::cout << "podaj opis awarii" << std::endl;
                 std::cin >> opis_awarii;
-                zgloszenie_awarii(nazwa_awarii, opis_awarii, zwroc_date());
-                std::cout << "pomyslnie utworzono record o nazwie: " << nazwa_awarii << "z opisem: " << opis_awarii << " z data: " << zwroc_date_string << std::endl;
+                //int numer_temp = zwroc_wielkosc_mapy(mapa_awarii);
+                zgloszenie_awarii(zwroc_wielkosc_mapy(mapa_awarii), nazwa_awarii, opis_awarii, zwroc_date(), lista_awarii);
+                //void zgloszenie_awarii(int numer_awarii,std::string nazwa_awarii, std::string opis_awarii, std::vector<int> data_vector, std::vector<Awaria>& lista_awarii){
+
                 uzupelnij_mape(mapa_awarii, nazwa_awarii);
+                std::cout << "pomyslnie utworzono record o nazwie: " << nazwa_awarii << " z opisem: " << opis_awarii << " z data: " << zwroc_date_string(data)
+                << " a jego numer to " << zwroc_wielkosc_mapy(mapa_awarii) << std::endl;
                 break;
             case 2:
                 //wyswietlanie aktualnych awarii
@@ -75,27 +76,55 @@ int main() {
                     std::cout << "podaj numer awarii ktora chcesz usunac:";
                     int wybor2 = 0;
                     std::cin >> wybor2;
-                    kasowanie_podanej_awarii(mapa_awarii, wybor2);
+                    //void kasowanie_podanej_awarii(std::map<int, std::string>& mapa_awarii, int wybor, std::vector<Awaria>& lista_awarii)
+                    kasowanie_podanej_awarii(mapa_awarii, wybor2, lista_awarii);
                     break;
                 }
                 else{
                     std::cout << "podales zly znak" << std::endl;
                     break;
                 }
+            case 4:
+                //wyswietlanie informacji o awarii
+                std::cout << "podaj id awarii ktorej chcesz poznac informacje" << std::endl;
+                int numerek;
+                std::cin >> numerek;
+                std::cout << lista_awarii[numerek].nazwa << std::endl;
+                break;
+
             case 9:
                 std::cout << "koncze dzialanie programu" << std::endl;
                 return 0;
+                break;
         }
     }
 
     return 0;
 }
 
-void kasowanie_podanej_awarii(std::map<int, std::string>& mapa_awarii, int wybor) {
+
+int zwroc_wielkosc_mapy(std::map<int, std::string>& mapa_awarii){
+        size_t rozmiar = mapa_awarii.size();
+        int numer_temp = static_cast<int>(rozmiar);
+        return numer_temp;
+};
+
+
+
+void kasowanie_podanej_awarii(std::map<int, std::string>& mapa_awarii, int wybor, std::vector<Awaria>& lista_awarii) {
     if (mapa_awarii.erase(wybor) == true) {
         std::cout << "usunieto";
     } else {
         std::cout << "cos poszlo nie tak przy usuwaniu" << std::endl;
+    }
+    for (auto i=lista_awarii.begin(); i != lista_awarii.end() ; i++){
+        if(i->numer_awarii == wybor){
+            lista_awarii.erase(i);
+            std::cout << "usunieto awarie o numerze: ";
+        }
+        else {
+            std::cout << "nie znaleziono awarii o podanym numerze";
+        }
     }
 }
 
@@ -105,6 +134,7 @@ void uzupelnij_mape(std::map<int, std::string>& mapa_awarii, std::string& nazwa_
     std::cout << "testowy numer mapy: " << temp << std::endl;
     mapa_awarii.insert(std::pair<int, std::string>(temp, nazwa_awarii));
 }
+
 
 void wyswietlanie_aktualnych_awarii(std::map<int, std::string>& mapa_awarii){
     for(auto& i : mapa_awarii){
@@ -181,8 +211,9 @@ void wyswietlanie_aktualnych_awarii(std::map<int, std::string>& mapa_awarii){
         return concat;
     }
 
-    void zgloszenie_awarii(std::string nazwa_awarii, std::string opis_awarii, std::vector<int> data_vector){
-        Awaria awaria(nazwa_awarii, opis_awarii, data_vector);
+    void zgloszenie_awarii(int numer_awarii,std::string nazwa_awarii, std::string opis_awarii, std::vector<int> data_vector, std::vector<Awaria>& lista_awarii){
+        Awaria awaria(numer_awarii,nazwa_awarii, opis_awarii, data_vector);
+        lista_awarii.push_back(awaria);
     }
 
     void wyswietl_menu_glowne(std::vector<int> data, std::vector<int> godzina) {
